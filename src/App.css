@@ -1,0 +1,120 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button.sui-search-box__submit {
+  background: linear-gradient(#B0E022, #5DAC13),#88C71B;
+}
+
+.sui-search-box__text-input:focus {
+  box-shadow: rgba(59, 69, 79, 0.3) 0px 2px 4px;
+  border: 1px solid #5DAC13;
+  
+}
+
+.sui-paging .rc-pagination-item a{
+  color: #578829;
+}
+
+.sui-paging .rc-pagination-item:hover a {
+  color: #5DAC13;
+}
+
+.sui-paging .rc-pagination-jump-next:hover a {
+  color: #5DAC13;
+}
+
+
+.sui-facet-view-more {
+  color: #5DAC13;
+}
+
+.smartBtn {
+  color: #4a4b4b;
+  margin-top:20px;
+  font-size:12px;
+}
+
+.smartBtn .MuiToggleButton-root {
+  width:30px;
+  height:30px;
+  border: 1px solid #a6a6a6;
+  color: #ddd
+}
+
+.smartBtn .MuiToggleButton-root.Mui-selected {
+  color: #5DAC13;
+  background-color:#f8ffef;
+  border: 1px solid #578829
+}
+
+.resultCard {
+  margin-bottom: 20px;
+}
+
+.resultCard .title {
+  font-size:1.2rem;
+  color: #4a4b4b;
+}
+
+.resultCard .secondaryTitle {
+  font-size:0.8rem;
+  color: #949494;
+}
+
+.resultCard .semanticTree {
+  color: #5DAC13;
+
+}
+
+.MuiLinearProgress-barColorPrimary {
+  background-color: #5DAC13 !important;
+  
+}
+
+.MuiLinearProgress-colorPrimary {
+  background-color: #CBECAC !important;
+}
+
+.sui-select__control--menu-is-open {
+  border: 1px solid #5DAC13;
+}
+
+.sui-facet-search__text-input:focus {
+  border: 1px solid #5DAC13;
+}
+
+.logoPlaceholder {
+  padding:30px;
+  text-align:center;
+}
