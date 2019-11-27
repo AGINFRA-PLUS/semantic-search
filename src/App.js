@@ -11,20 +11,22 @@ import {
   Paging,
   Sorting
 } from "@elastic/react-search-ui";
-import { Grid, Container, Box, LinearProgress, Card, CardActions, CardContent, Typography, Button, Popper, Fade, Paper} from '@material-ui/core';
-import SemanticTreeToggle from './SemanticTreeToggle';
+import { Grid, Container, Box, LinearProgress, Card, CardActions, CardContent, Typography, Button, Chip } from '@material-ui/core';
+import SemanticTreeToggle from './components/SemanticTreeToggle';
 import OpenInNewRoundedIcon from '@material-ui/icons/OpenInNewRounded';
 import { SingleSelectFacet } from "@elastic/react-search-ui-views";
-import "@elastic/react-search-ui-views/lib/styles/styles.css";
-import SmartToggle from "./SmartToggle";
-import buildRequest from "./buildRequest";
-import runRequest from "./runRequest";
-import applyDisjunctiveFaceting from "./applyDisjunctiveFaceting";
-import buildState from "./buildState";
+import SmartToggle from "./components/SmartToggle";
+import buildRequest from "./search/buildRequest";
+import runRequest from "./search/runRequest";
+import applyDisjunctiveFaceting from "./search/applyDisjunctiveFaceting";
+import buildState from "./search/buildState";
 import styles from "./App.css";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./Theme.js";
-import logo from "./aginfra_logo.png"
+import logo from "./static/img/aginfra_logo.png";
+import PageviewTwoToneIcon from '@material-ui/icons/PageviewTwoTone';
+
+
 
 const config = {
   debug: false,
@@ -62,121 +64,131 @@ const config = {
 
 export default function App() {
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
-  const [placement, setPlacement] = React.useState();
-  
-  const semanticTreeClick = newPlacement => event => {
-    alert(event.currentTarget);
-    setAnchorEl(event.currentTarget);
-    setOpen(prev => placement !== newPlacement || !prev);
-    setPlacement(newPlacement)
-  }
-
   return (
     <ThemeProvider theme={theme()}>
       <Container>
         <Box className="logoPlaceholder">
-          <img src={logo} alt="AGINFRA+"/>
-        </Box> 
-      <SearchProvider config={config}>
-        <WithSearch mapContextToProps={({ isLoading, wasSearched, results, filters }) => ({ isLoading, wasSearched, results, filters })}>
-          {({ isLoading, wasSearched, results, filters }) => (
-            
-            <Grid container spacing={3}>
-              {wasSearched && (
-              <ErrorBoundary>
-              <Grid item xs={12}>
+          <Typography variant='h1'><PageviewTwoToneIcon/> Semantic Search</Typography>
+          <br />
+          <span>powered by:<br /><img src={logo} className="aginfraLogo" alt="AGINFRA+" /></span>
+        </Box>
+        <SearchProvider config={config}>
+          <WithSearch mapContextToProps={({ isLoading, wasSearched, results, filters, searchTerm, setSearchTerm }) => ({ isLoading, wasSearched, results, filters, searchTerm, setSearchTerm })}>
+            {({ isLoading, wasSearched, results, filters, searchTerm, setSearchTerm }) => (
+
+              <Grid container spacing={3}>
+
+                <ErrorBoundary>
+
+                  <Grid item xs={12}>
 
                     <SearchBox
-                      alwaysSearchOnInitialLoad={false}
+                      alwaysSearchOnInitialLoad={true}
                       autocompleteResults={false}
                       autocompleteSuggestions={false}
                       searchAsYouType={false}
                     />
-                    
-                  </Grid>
-                  <Grid item xs={3}><Box style={{marginBottom:'20px'}}>
-                  
-                      {!isLoading && <ResultsPerPage />}
-                      <SmartToggle/>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Box style={{float:'right', textAlign:'right'}}>
-                    {!isLoading && <PagingInfo />}<br/>
-                    <Paging  />
 
-                    </Box>
-                    
                   </Grid>
-                  <Grid item xs={12}>
-                    { isLoading && <LinearProgress className="progressBar" variant="query" /> }
-                  </Grid>
-                  <Grid item xs={3}>
-                      <Facet
-                        field="tags"
-                        label="Tags"
-                        filterType="any"
-                        isFilterable={true}
-                      />
-                      <Facet
-                        field="entityType"
-                        label="Type"
-                        filterType="all"
-                      />
-                      <Facet
-                        field="dataSource"
-                        label="Source"
-                        filterType="all"
-                      />
-                      <Facet field="visitors" label="Visitors" filterType="any" />
-                      <Facet
-                        field="acres"
-                        label="Acres"
-                        view={SingleSelectFacet}
-                      />
-                    </Grid>
-                    <Grid item xs={9}>
-                    {results.map(result => {
-                      return (
-                        <Card className="resultCard" key={result.id.raw}>
-                        <CardContent>
-                        <Typography className="title" color="textSecondary" gutterBottom>
-                            {result.title.raw}
-                          </Typography>
+                  {wasSearched && (
+                    <Grid container spacing={3}>
+                      <Grid item xs={3}><Box style={{ marginBottom: '20px' }}>
+
+                        {!isLoading && <ResultsPerPage />}
+                        <SmartToggle />
+                      </Box>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Box style={{ float: 'right', textAlign: 'right' }}>
+                          {!isLoading && <PagingInfo />}<br />
+                          <Paging />
+
+                        </Box>
+
+                      </Grid>
+                      <Grid item xs={12}>
+                        {isLoading && <LinearProgress className="progressBar" variant="query" />}
+                      </Grid>
+                      <>
+                        <Grid item xs={3}>
+                          <Facet
+                            field="tags"
+                            label="Tags"
+                            filterType="any"
+                            isFilterable={true}
+                          />
+                          <Facet
+                            field="entityType"
+                            label="Type"
+                            filterType="any"
+                          />
+                          <Facet
+                            field="informationType"
+                            label="AGINFRA type"
+                            filterType="any"
+                          />
+                          <Facet
+                            field="dataSource"
+                            label="Source"
+                            filterType="any"
+                          />
                           
-                          <Typography className="secondaryTitle" color="textSecondary">
-                            {result.entityType.raw} - {new Date (result.createdOn.raw).getFullYear()}
-                          </Typography>
-                          { (result.description.raw) &&
-                            <Typography variant="body2" component="p">
-                              {result.description.raw}
-                            </Typography>
+                        </Grid>
+                        <Grid item xs={9}>
+                          {results.map(result => {
+                            
+                            return (
+                              <Card className="resultCard" key={result.id.raw}>
+                                <CardContent>
+
+                                  <Typography className="title" color="textSecondary" gutterBottom>
+                                    {result.title.raw}
+                                    <b>{(result._score) ? "null" : result._score}</b>
+                                  </Typography>
+
+                                  <Typography className="secondaryTitle" color="textSecondary">
+                                    {result.information.raw.type} - {new Date(result.createdOn.raw).getFullYear()}
+                                  </Typography>
+                                  {(result.description.raw) &&
+                                    <Typography variant="body2" component="p">
+                                      {result.description.raw}
+                                    </Typography>
+                                  }
+                                  <div class="tags">
+                                    {(result.tags.raw.length > 0) &&
+                                      result.tags.raw.map(tag => {
+                                        return (<Chip className="tag" size="small" label={tag} onClick={()=>{setSearchTerm (tag);}}/>)
+                                      })
+                                    }
+                                  </div>
+                                </CardContent>
+                                <CardActions>
+                                  <SemanticTreeToggle query={result.title.raw + ' ' + result.description.raw + ' ' + result.tags.raw.toString()} disabled={
+                                    filters.filter(filter => filter.field == 'smart').length == 0 ||
+                                    !filters.filter(filter => filter.field == 'smart')[0].values[0]
+                                  }
+                                  />
+
+                                  <Button target="_blank" href={result.information.raw["Item URL"]} size="small"><OpenInNewRoundedIcon />&nbsp;View on VRE</Button>
+                                </CardActions>
+                              </Card>
+                            )
                           }
-                        </CardContent>
-                        <CardActions>
-                        <SemanticTreeToggle disabled={
-                            filters.filter(filter => filter.field == 'smart').length == 0 || 
-                            !filters.filter(filter => filter.field == 'smart')[0].values[0]
-                            }
-                      />
-                          
-                          <Button size="small"><OpenInNewRoundedIcon/></Button>
-                        </CardActions>
-                      </Card>
-                      )}
-                    )}
-                  </Grid>
-              </ErrorBoundary>)}
-              <Grid item xs={12}>
-                <Paging style={{float:'right'}} />
+                          )}
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Paging style={{ float: 'right' }} />
+                        </Grid>
+                      </>
+                    </Grid>
+                  )}
+                </ErrorBoundary>
+
               </Grid>
-            </Grid>
-          )}
-        </WithSearch>
-        
-      </SearchProvider>
+            )}
+          </WithSearch>
+
+        </SearchProvider>
       </Container>
     </ThemeProvider>
   );
