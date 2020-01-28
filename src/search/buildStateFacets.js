@@ -62,14 +62,19 @@ export default function buildStateFacets(aggregations, maxScore) {
     aggregations,
     "entityType"
   );
-  const dataSource = getValueFacet(
+  const source = getValueFacet(
     aggregations,
-    "dataSource"
+    "source"
+  );
+  const organization = getValueFacet(
+    aggregations,
+    "organization"
   );
   const facets = {
     ...(tags && { tags }),
     ...(entityType && { entityType }),
-    ...(dataSource && { dataSource }),
+    ...(source && { source }),
+    ...(organization && { organization }),
     ...(smart && { smart })
   };
   if (Object.keys(facets).length > 0) {

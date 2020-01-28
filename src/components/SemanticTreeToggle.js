@@ -5,7 +5,7 @@ import SemanticsResourcesTable from './SemanticsResourcesTable';
 import AccountTreeRoundedIcon from '@material-ui/icons/AccountTreeRounded';
 
 function SemanticTreeToggle(props) {
-
+    
     
     const handleClick = event => {
       fetchHierarchy(); 
@@ -19,7 +19,7 @@ function SemanticTreeToggle(props) {
     async function fetchHierarchy() {
         axios({
             method: 'post',
-            url: 'http://52.214.72.17:9092/ner/annotate/',
+            url: 'https://api.agroknow.com/semantic-api/terms/annotate',
             data: props.query    // 10 seconds timeout
           })
           .then(response => { formatResults(response.data);})
@@ -29,7 +29,6 @@ function SemanticTreeToggle(props) {
     function formatResults(data) {
         var rows = [];
         for ( var i in data ) {
-            console.log(data[i]);
             var label = data[i].label;
             var confidence = data[i].confidence;
             var resource = data[i].ontology;

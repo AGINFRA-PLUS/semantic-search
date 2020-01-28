@@ -73,7 +73,6 @@ export default function buildRequestFilter(filters) {
   var filtersObj = {};
   filtersObj.config = {};
   filtersObj.strictQuery = {};
-  
   for (var i in filters) {
     if (["entityType", "informationType", "tags"].includes(filters[i].field)) {
       //return [...acc, getTermFilter(filter)];
@@ -82,8 +81,11 @@ export default function buildRequestFilter(filters) {
     if (["acres", "visitors"].includes(filters[i].field)) {
       return getRangeFilter(filters[i]);
     }
-    if (["dataSource"].includes(filters[i].field)) {
+    if (["organization"].includes(filters[i].field)) {
       filtersObj["strictQuery"]["information.organization_title.keyword"] = filters[i].values[0];
+    }
+    if (["source"].includes(filters[i].field)) {
+      filtersObj["strictQuery"]["dataSource.keyword"] = filters[i].values[0];
     }
   }
   //if (!filters.filter(filter => filter.field == 'smart')[0].values[0]) {

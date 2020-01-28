@@ -10,6 +10,7 @@ import {
   ResultsPerPage,
   Paging,
   Sorting
+  
 } from "@elastic/react-search-ui";
 import { Grid, Container, Box, LinearProgress, Card, CardActions, CardContent, Typography, Button, Chip } from '@material-ui/core';
 import SemanticTreeToggle from './components/SemanticTreeToggle';
@@ -60,6 +61,12 @@ const config = {
   }
 };
 
+function constructSemanticQuery(result) {
+  var query = "";
+  query = result.title.raw;
+  query += (result.tags.raw) ? ' '+result.tags.raw.toString(): '';
+  return query;
+}
 
 
 export default function App() {
@@ -111,11 +118,12 @@ export default function App() {
                       </Grid>
                       <>
                         <Grid item xs={3}>
-                          <Facet
-                            field="tags"
-                            label="Tags"
+                        <Facet
+                            field="source"
+                            label="Source"
                             filterType="any"
                             isFilterable={true}
+                            view={SingleSelectFacet}
                           />
                           <Facet
                             field="entityType"
@@ -128,10 +136,20 @@ export default function App() {
                             filterType="any"
                           />
                           <Facet
-                            field="dataSource"
-                            label="Source"
+                            field="organization"
+                            label="Organization"
                             filterType="any"
+                            isFilterable={true}
                           />
+                          
+                          <Facet
+                            field="tags"
+                            label="Tags"
+                            filterType="any"
+                            isFilterable={true}
+                          />
+                          
+                          
                           
                         </Grid>
                         <Grid item xs={9}>
@@ -149,13 +167,13 @@ export default function App() {
                                   <Typography className="secondaryTitle" color="textSecondary">
                                     {result.information.raw.type} - {new Date(result.createdOn.raw).getFullYear()}
                                   </Typography>
-                                  {(result.description.raw) &&
-                                    <Typography variant="body2" component="p">
-                                      {result.description.raw}
+                                  {(result.description ) &&
+                                    <Typography variant="body2" component="p" dangerouslySetInnerHTML={{__html: result.description.raw}} >
+                                      {}
                                     </Typography>
                                   }
                                   <div class="tags">
-                                    {(result.tags.raw.length > 0) &&
+                                    {( result.tags.raw ) &&
                                       result.tags.raw.map(tag => {
                                         return (<Chip className="tag" size="small" label={tag} onClick={()=>{setSearchTerm (tag);}}/>)
                                       })
@@ -163,13 +181,15 @@ export default function App() {
                                   </div>
                                 </CardContent>
                                 <CardActions>
-                                  <SemanticTreeToggle query={result.title.raw + ' ' + result.description.raw + ' ' + result.tags.raw.toString()} disabled={
+                                
+                                  <SemanticTreeToggle query={constructSemanticQuery(result)} disabled={
                                     filters.filter(filter => filter.field == 'smart').length == 0 ||
                                     !filters.filter(filter => filter.field == 'smart')[0].values[0]
                                   }
                                   />
+                                
 
-                                  <Button target="_blank" href={result.information.raw["Item URL"]} size="small"><OpenInNewRoundedIcon />&nbsp;View on VRE</Button>
+                                  <Button target="_blank" href={result.information.raw["Item URL"]} size="small"><OpenInNewRoundedIcon />&nbsp;Access</Button>
                                 </CardActions>
                               </Card>
                             )

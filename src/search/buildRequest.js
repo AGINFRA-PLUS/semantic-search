@@ -100,7 +100,11 @@ export default function buildRequest(state) {
           "attribute": "information.type.keyword",
           "size": 200
         },
-        "dataSource": {
+        "source": {
+          "attribute": "dataSource.keyword",
+          "size": 200
+        },
+        "organization": {
           "attribute": "information.organization_title.keyword",
           "size": 200
         }
